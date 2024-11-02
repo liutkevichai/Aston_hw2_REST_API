@@ -45,7 +45,7 @@ public class DoctorRepository extends Repository<Doctor> {
     }
 
     @Override
-    public void create(Doctor entity) throws SQLException {
+    public void save(Doctor entity) throws SQLException {
         String query = "INSERT INTO Doctors (first_name, last_name, specialization, years_of_experience) " +
                 "VALUES(?,?,?,?);";
 

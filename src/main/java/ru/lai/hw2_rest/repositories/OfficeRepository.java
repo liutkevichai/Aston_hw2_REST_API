@@ -45,7 +45,7 @@ public class OfficeRepository extends Repository<Office> {
     }
 
     @Override
-    public void create(Office entity) throws SQLException {
+    public void save(Office entity) throws SQLException {
         String query = "INSERT INTO Offices (address) VALUES(?);";
 
         try (Connection conn = super.getConnection();

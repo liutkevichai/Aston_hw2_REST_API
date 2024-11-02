@@ -16,14 +16,18 @@ public abstract class Repository<T> {
         try {
             return DataSourceConfig.getConnection();
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Could not connect to the database", e);
-            throw new RuntimeException("Failed to connect to the database", e);
+            logger.log(Level.SEVERE, "Could not connect to database", e);
+            throw new RuntimeException("Failed to connect to database", e);
         }
     }
 
     public abstract T findById(int id) throws SQLException;
-    public abstract List<?> findAll() throws SQLException;
-    public abstract void create(T entity) throws SQLException;
+
+    public abstract List<T> findAll() throws SQLException;
+
+    public abstract void save(T entity) throws SQLException;
+
     public abstract void update(T entity) throws SQLException;
+
     public abstract void delete(T entity) throws SQLException;
 }

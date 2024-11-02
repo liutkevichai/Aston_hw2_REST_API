@@ -12,7 +12,7 @@ public class PatientRepository extends Repository<Patient> {
         String query = "SELECT * FROM Patients WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
-            PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, id);
             try (ResultSet rs = statement.executeQuery()) {
@@ -25,14 +25,14 @@ public class PatientRepository extends Repository<Patient> {
         }
     }
 
-        @Override
+    @Override
     public List<Patient> findAll() throws SQLException {
         String query = "SELECT * FROM Patients;";
         List<Patient> allPatients = new ArrayList<>();
 
         try (Connection conn = super.getConnection();
-            PreparedStatement statement = conn.prepareStatement(query);
-            ResultSet rs = statement.executeQuery()) {
+             PreparedStatement statement = conn.prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 allPatients.add(mapResultSetToPatient(rs));
@@ -42,11 +42,11 @@ public class PatientRepository extends Repository<Patient> {
     }
 
     @Override
-    public void create(Patient entity) throws SQLException {
+    public void save(Patient entity) throws SQLException {
         String query = "INSERT INTO Patients (first_name, last_name, date_of_birth, gender) VALUES(?,?,?,?);";
 
         try (Connection conn = super.getConnection();
-            PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
@@ -62,7 +62,7 @@ public class PatientRepository extends Repository<Patient> {
                 "WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
-            PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
@@ -78,7 +78,7 @@ public class PatientRepository extends Repository<Patient> {
         String query = "DELETE FROM Patients WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
-            PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, entity.getId());
             statement.executeUpdate();

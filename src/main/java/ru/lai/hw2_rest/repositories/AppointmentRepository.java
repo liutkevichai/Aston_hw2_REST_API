@@ -15,7 +15,7 @@ public class AppointmentRepository extends Repository<Appointment> {
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setInt(1, id);
-            try (ResultSet rs = statement.executeQuery()){
+            try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToAppointment(rs);
                 } else {
@@ -42,7 +42,7 @@ public class AppointmentRepository extends Repository<Appointment> {
     }
 
     @Override
-    public void create(Appointment entity) throws SQLException {
+    public void save(Appointment entity) throws SQLException {
         String query = "INSERT INTO Appointments (appointment_datetime, patient_id, doctor_id, office_id) " +
                 "VALUES(?,?,?,?);";
 
