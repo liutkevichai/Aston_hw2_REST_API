@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;;
 
-public abstract class Repository {
+public abstract class Repository<T> {
     private static final Logger logger = Logger.getLogger(Repository.class.getName());
 
     public Connection getConnection() {
@@ -21,9 +21,9 @@ public abstract class Repository {
         }
     }
 
-    public abstract <T> T findById(int id);
-    public abstract <T> List<T> findAll();
-    public abstract <T> void create(T entity);
-    public abstract <T> void update(T entity);
-    public abstract <T> void delete(T entity);
+    public abstract T findById(int id) throws SQLException;
+    public abstract List<?> findAll() throws SQLException;
+    public abstract void create(T entity) throws SQLException;
+    public abstract void update(T entity) throws SQLException;
+    public abstract void delete(T entity) throws SQLException;
 }
