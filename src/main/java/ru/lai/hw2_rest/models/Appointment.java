@@ -1,9 +1,12 @@
 package ru.lai.hw2_rest.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class Appointment {
     private int id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime appointmentDatetime;
     private int patientId;
     private int doctorId;
@@ -47,5 +50,16 @@ public class Appointment {
 
     public void setOfficeId(int officeId) {
         this.officeId = officeId;
+    }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", appointmentDatetime=" + appointmentDatetime +
+                ", patientId=" + patientId +
+                ", doctorId=" + doctorId +
+                ", officeId=" + officeId +
+                '}';
     }
 }

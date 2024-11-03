@@ -16,13 +16,17 @@ public class PropertiesUtil {
         this.properties = properties;
     }
 
-    public static PropertiesUtil fromFile(String filePath) {
+    public static PropertiesUtil fromFile(String fileName) {
         Properties properties = new Properties();
-        try (InputStream inputStream = new FileInputStream(filePath)) {
+        try (InputStream inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName)) {
+            if (inputStream == null) {
+                logger.log(Level.SEVERE, "Could not find properties file: " + fileName);
+                throw new RuntimeException("Properties file not found: " + fileName);
+            }
             properties.load(inputStream);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Could not load properties from file: " + filePath, e);
-            throw new RuntimeException("Failed to load properties from file: " + filePath, e);
+            logger.log(Level.SEVERE, "Could not load properties from file: " + fileName, e);
+            throw new RuntimeException("Failed to load properties from file: " + fileName, e);
         }
         return new PropertiesUtil(properties);
     }

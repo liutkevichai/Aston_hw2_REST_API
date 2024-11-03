@@ -46,4 +46,15 @@ public class Doctor {
     public void setYearsOfExperience(int years_of_experience) {
         this.yearsOfExperience = years_of_experience;
     }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", yearsOfExperience=" + yearsOfExperience +
+                '}';
+    }
 }

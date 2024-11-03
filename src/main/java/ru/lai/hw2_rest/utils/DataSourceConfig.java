@@ -10,7 +10,7 @@ public class DataSourceConfig {
     private static final String PASSWORD;
 
     static {
-        PropertiesUtil pu = PropertiesUtil.fromFile("src/main/resources/config.properties");
+        PropertiesUtil pu = PropertiesUtil.fromFile("config.properties");
         DB_URL = pu.readProperty("url");
         USER = pu.readProperty("user");
         PASSWORD = pu.readProperty("password");
@@ -19,6 +19,12 @@ public class DataSourceConfig {
     private DataSourceConfig() {}
 
     public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("PostgreSQL Driver not found!", e);
+        }
         return DriverManager.getConnection(DB_URL, USER, PASSWORD);
     }
+
 }

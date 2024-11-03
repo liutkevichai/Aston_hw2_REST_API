@@ -1,6 +1,7 @@
 package ru.lai.hw2_rest.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -8,6 +9,11 @@ import java.io.IOException;
 
 public class JsonUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
+
 
     public static <T> T parseJsonRequest(HttpServletRequest req, Class<T> clazz) throws IOException {
         return objectMapper.readValue(req.getReader(), clazz);
