@@ -45,7 +45,7 @@ public class DoctorRepository extends Repository<Doctor> {
     }
 
     @Override
-    public void save(Doctor entity) throws SQLException {
+    public int save(Doctor entity) throws SQLException {
         String query = "INSERT INTO Doctors (first_name, last_name, specialization, years_of_experience) " +
                 "VALUES(?,?,?,?);";
 
@@ -56,12 +56,12 @@ public class DoctorRepository extends Repository<Doctor> {
             statement.setString(2, entity.getLastName());
             statement.setString(3, entity.getSpecialization());
             statement.setInt(4, entity.getYearsOfExperience());
-            statement.executeUpdate();
+            return statement.executeUpdate();
         }
     }
 
     @Override
-    public void update(Doctor entity) throws SQLException {
+    public int update(Doctor entity) throws SQLException {
         String query = "UPDATE Doctors SET first_name = ?, last_name = ?, specialization = ?, years_of_experience = ? " +
                 "WHERE id = ?;";
 
@@ -73,19 +73,19 @@ public class DoctorRepository extends Repository<Doctor> {
             statement.setString(3, entity.getSpecialization());
             statement.setInt(4, entity.getYearsOfExperience());
             statement.setInt(5, entity.getId());
-            statement.executeUpdate();
+            return statement.executeUpdate();
         }
     }
 
     @Override
-    public void delete(Doctor entity) throws SQLException {
+    public int delete(int id) throws SQLException {
         String query = "DELETE FROM Doctors WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, entity.getId());
-            statement.executeUpdate();
+            statement.setInt(1, id);
+            return statement.executeUpdate();
         }
     }
 

@@ -45,19 +45,19 @@ public class OfficeRepository extends Repository<Office> {
     }
 
     @Override
-    public void save(Office entity) throws SQLException {
+    public int save(Office entity) throws SQLException {
         String query = "INSERT INTO Offices (address) VALUES(?);";
 
         try (Connection conn = super.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setString(1, entity.getAddress());
-            statement.executeUpdate();
+            return statement.executeUpdate();
         }
     }
 
     @Override
-    public void update(Office entity) throws SQLException {
+    public int update(Office entity) throws SQLException {
         String query = "UPDATE Offices SET address = ? WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
@@ -65,19 +65,19 @@ public class OfficeRepository extends Repository<Office> {
 
             statement.setString(1, entity.getAddress());
             statement.setInt(2, entity.getId());
-            statement.executeUpdate();
+            return statement.executeUpdate();
         }
     }
 
     @Override
-    public void delete(Office entity) throws SQLException {
+    public int delete(int id) throws SQLException {
         String query = "DELETE FROM Offices WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, entity.getId());
-            statement.executeUpdate();
+            statement.setInt(1, id);
+            return statement.executeUpdate();
         }
     }
 

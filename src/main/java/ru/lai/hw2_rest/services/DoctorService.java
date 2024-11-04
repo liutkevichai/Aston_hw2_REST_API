@@ -37,9 +37,9 @@ public class DoctorService implements Service<Doctor> {
     }
 
     @Override
-    public void create(Doctor entity) {
+    public int create(Doctor entity) {
         try {
-            repository.save(entity);
+            return repository.save(entity);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Could not create a new record in database: " + entity, e);
             throw new RuntimeException("Failed to create a new record in database: " + entity, e);
@@ -47,9 +47,9 @@ public class DoctorService implements Service<Doctor> {
     }
 
     @Override
-    public void update(Doctor entity) {
+    public int update(Doctor entity) {
         try {
-            repository.update(entity);
+            return repository.update(entity);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Could not update a record in database: " + entity, e);
             throw new RuntimeException("Failed to update a record in database: " + entity, e);
@@ -58,12 +58,12 @@ public class DoctorService implements Service<Doctor> {
     }
 
     @Override
-    public void delete(Doctor entity) {
+    public int delete(int id) {
         try {
-            repository.delete(entity);
+            return repository.delete(id);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Could not delete the record from database: " + entity, e);
-            throw new RuntimeException("Failed to delete the record from database: " + entity, e);
+            logger.log(Level.SEVERE, "Could not delete the record from database, id: " + id, e);
+            throw new RuntimeException("Failed to delete the record from database, id: " + id, e);
         }
     }
 

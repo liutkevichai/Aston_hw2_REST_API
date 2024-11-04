@@ -25,9 +25,9 @@ public abstract class Repository<T> {
 
     public abstract List<T> findAll() throws SQLException;
 
-    public abstract void save(T entity) throws SQLException;
+    public abstract int save(T entity) throws SQLException;
 
-    public abstract void update(T entity) throws SQLException;
+    public abstract int update(T entity) throws SQLException;
 
-    public abstract void delete(T entity) throws SQLException;
+    public abstract int delete(int id) throws SQLException;
 }

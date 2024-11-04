@@ -42,7 +42,7 @@ public class AppointmentRepository extends Repository<Appointment> {
     }
 
     @Override
-    public void save(Appointment entity) throws SQLException {
+    public int save(Appointment entity) throws SQLException {
         String query = "INSERT INTO Appointments (appointment_datetime, patient_id, doctor_id, office_id) " +
                 "VALUES(?,?,?,?);";
 
@@ -53,12 +53,12 @@ public class AppointmentRepository extends Repository<Appointment> {
             statement.setInt(2, entity.getPatientId());
             statement.setInt(3, entity.getDoctorId());
             statement.setInt(4, entity.getOfficeId());
-            statement.executeUpdate();
+            return statement.executeUpdate();
         }
     }
 
     @Override
-    public void update(Appointment entity) throws SQLException {
+    public int update(Appointment entity) throws SQLException {
         String query = "UPDATE Appointments SET appointment_datetime = ?, patient_id = ?, doctor_id = ?, office_id = ? " +
                 "WHERE id = ?;";
 
@@ -70,19 +70,19 @@ public class AppointmentRepository extends Repository<Appointment> {
             statement.setInt(3, entity.getDoctorId());
             statement.setInt(4, entity.getOfficeId());
             statement.setInt(5, entity.getId());
-            statement.executeUpdate();
+            return statement.executeUpdate();
         }
     }
 
     @Override
-    public void delete(Appointment entity) throws SQLException {
+    public int delete(int id) throws SQLException {
         String query = "DELETE FROM Appointments WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
-            statement.setInt(1, entity.getId());
-            statement.executeUpdate();
+            statement.setInt(1, id);
+            return statement.executeUpdate();
         }
     }
 
