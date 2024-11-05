@@ -3,6 +3,8 @@ package ru.lai.hw2_rest.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.Map;
 
 public class Appointment {
     private int id;
@@ -52,6 +54,14 @@ public class Appointment {
         this.officeId = officeId;
     }
 
+    public void setUpWithMap(Map<String, String> map) throws NumberFormatException, DateTimeParseException {
+        this.setId(Integer.parseInt(map.get("id")));
+        this.setAppointmentDatetime(LocalDateTime.parse(map.get("appointmentDatetime").replace("%3A", ":")));
+        this.setPatientId(Integer.parseInt(map.get("patientId")));
+        this.setDoctorId(Integer.parseInt(map.get("doctorId")));
+        this.setOfficeId(Integer.parseInt(map.get("officeId")));
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -62,4 +72,5 @@ public class Appointment {
                 ", officeId=" + officeId +
                 '}';
     }
+
 }

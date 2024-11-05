@@ -1,5 +1,7 @@
 package ru.lai.hw2_rest.models;
 
+import java.util.Map;
+
 public class Doctor {
     private int id;
     private String firstName;
@@ -45,6 +47,14 @@ public class Doctor {
 
     public void setYearsOfExperience(int years_of_experience) {
         this.yearsOfExperience = years_of_experience;
+    }
+
+    public void setUpWithMap(Map<String, String> map) throws NumberFormatException {
+        this.setId(Integer.parseInt(map.get("id")));
+        this.setFirstName(map.get("firstName"));
+        this.setLastName(map.get("lastName"));
+        this.setSpecialization(map.get("specialization"));
+        this.setYearsOfExperience(Integer.parseInt(map.get("yearsOfExperience")));
     }
 
     @Override

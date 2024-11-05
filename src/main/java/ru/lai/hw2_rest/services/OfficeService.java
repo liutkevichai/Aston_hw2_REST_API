@@ -1,10 +1,13 @@
 package ru.lai.hw2_rest.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import ru.lai.hw2_rest.models.Office;
 import ru.lai.hw2_rest.repositories.Repository;
+import ru.lai.hw2_rest.utils.RequestParser;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,8 +24,8 @@ public class OfficeService implements Service<Office> {
         try {
             return repository.findById(id);
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Could not find id in the database, id: " + id, e);
-            throw new RuntimeException("Failed to find the id in the database: " + id, e);
+            logger.log(Level.WARNING, "(Service) Could not find id in the database, id: " + id, e);
+            throw new RuntimeException("(Service) Failed to find the id in the database: " + id, e);
         }
     }
 
@@ -31,8 +34,8 @@ public class OfficeService implements Service<Office> {
         try {
             return repository.findAll();
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Could not fetch result set from database", e);
-            throw new RuntimeException("Failed to fetch result set from database", e);
+            logger.log(Level.WARNING, "(Service) Could not fetch result set from database", e);
+            throw new RuntimeException("(Service) Failed to fetch result set from database", e);
         }
     }
 
@@ -41,8 +44,8 @@ public class OfficeService implements Service<Office> {
         try {
             return repository.save(entity);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Could not create a new record in database: " + entity, e);
-            throw new RuntimeException("Failed to create a new record in database: " + entity, e);
+            logger.log(Level.SEVERE, "(Service) Could not create a new record in database: " + entity, e);
+            throw new RuntimeException("(Service) Failed to create a new record in database: " + entity, e);
         }
     }
 
@@ -51,8 +54,8 @@ public class OfficeService implements Service<Office> {
         try {
             return repository.update(entity);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Could not update a record in database: " + entity, e);
-            throw new RuntimeException("Failed to update a record in database: " + entity, e);
+            logger.log(Level.SEVERE, "(Service) Could not update a record in database: " + entity, e);
+            throw new RuntimeException("(Service) Failed to update a record in database: " + entity, e);
         }
 
     }
@@ -62,9 +65,23 @@ public class OfficeService implements Service<Office> {
         try {
             return repository.delete(id);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Could not delete the record from database, id: " + id, e);
-            throw new RuntimeException("Failed to delete the record from database, id: " + id, e);
+            logger.log(Level.SEVERE, "(Service) Could not delete the record from database, id: " + id, e);
+            throw new RuntimeException("(Service) Failed to delete the record from database, id: " + id, e);
         }
+    }
+
+    @Override
+    public Office parseEntity(HttpServletRequest req) {
+        Map<String, String> officeMap = RequestParser.getParameterMap(req);
+        Office office = new Office();
+        try {
+            office.setUpWithMap(officeMap);
+        } catch (NumberFormatException e) {
+            logger.log(Level.SEVERE, "(Service) Could not setup entity with parameter map: " + officeMap, e);
+            throw new RuntimeException("(Service) Failed to setup entity with parameter map: " + officeMap, e);
+        }
+
+        return office;
     }
 
 }

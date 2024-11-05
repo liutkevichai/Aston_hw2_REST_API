@@ -1,11 +1,15 @@
 package ru.lai.hw2_rest.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Date;
+import java.util.Map;
 
 public class Patient {
     private int id;
     private String firstName;
     private String lastName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
     private String gender;
 
@@ -47,6 +51,14 @@ public class Patient {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public void setUpWithMap(Map<String, String> map) throws IllegalArgumentException {
+        this.setId(Integer.parseInt(map.get("id")));
+        this.setFirstName(map.get("firstName"));
+        this.setLastName(map.get("lastName"));
+        this.setDateOfBirth(Date.valueOf(map.get("dateOfBirth")));
+        this.setGender(map.get("gender"));
     }
 
     @Override

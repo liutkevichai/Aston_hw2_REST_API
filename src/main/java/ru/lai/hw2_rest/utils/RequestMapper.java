@@ -37,7 +37,6 @@ public class RequestMapper {
             doctor.setId(parseIntParameter(req, "id"));
         }
 
-        doctor.setId(parseIntParameter(req, "id"));
         doctor.setFirstName(req.getParameter("firstName"));
         doctor.setLastName(req.getParameter("lastName"));
         doctor.setSpecialization(req.getParameter("specialization"));
@@ -53,7 +52,6 @@ public class RequestMapper {
             patient.setId(parseIntParameter(req, "id"));
         }
 
-        patient.setId(parseIntParameter(req, "id"));
         patient.setFirstName(req.getParameter("firstName"));
         patient.setLastName(req.getParameter("lastName"));
         patient.setDateOfBirth(parseDateParameter(req, "dateOfBirth"));
@@ -69,7 +67,6 @@ public class RequestMapper {
             office.setId(parseIntParameter(req, "id"));
         }
 
-        office.setId(parseIntParameter(req, "id"));
         office.setAddress(req.getParameter("address"));
 
         return office;

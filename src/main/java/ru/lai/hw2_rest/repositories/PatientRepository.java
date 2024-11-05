@@ -43,7 +43,7 @@ public class PatientRepository extends Repository<Patient> {
 
     @Override
     public int save(Patient entity) throws SQLException {
-        String query = "INSERT INTO Patients (first_name, last_name, date_of_birth, gender) VALUES(?,?,?,?);";
+        String query = "INSERT INTO Patients (first_name, last_name, date_of_birth, gender) VALUES(?,?,?,?::genders);";
 
         try (Connection conn = super.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
@@ -58,7 +58,7 @@ public class PatientRepository extends Repository<Patient> {
 
     @Override
     public int update(Patient entity) throws SQLException {
-        String query = "UPDATE Patients SET first_name = ?, last_name = ?, date_of_birth = ?, gender = ? " +
+        String query = "UPDATE Patients SET first_name = ?, last_name = ?, date_of_birth = ?, gender = ?::genders " +
                 "WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
