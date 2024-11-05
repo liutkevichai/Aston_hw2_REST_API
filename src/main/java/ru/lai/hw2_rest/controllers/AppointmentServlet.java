@@ -14,7 +14,9 @@ import ru.lai.hw2_rest.utils.JsonUtil;
 import ru.lai.hw2_rest.utils.RequestMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "appointmentServlet", value = "/appointments/*")
 public class AppointmentServlet extends HttpServlet {
@@ -34,7 +36,8 @@ public class AppointmentServlet extends HttpServlet {
                 Appointment appointment = appointmentService.getById(appointmentId);
 
                 if (appointment != null) {
-                    JsonUtil.writeJsonResponse(resp, appointment);
+                    JsonUtil.writeJsonResponse(resp, mapWithLinks(appointment));
+
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     JsonUtil.writeJsonResponse(resp, "error", "Appointment not found");
@@ -44,8 +47,11 @@ public class AppointmentServlet extends HttpServlet {
                 JsonUtil.writeJsonResponse(resp, "error", "Invalid appointment ID");
             }
         } else {
-            List<Appointment> appointments = appointmentService.getAll();
-            JsonUtil.writeJsonResponse(resp, appointments);
+            List<Map<String, Object>> appointmentsWithLinks = new ArrayList<>();
+            for (Appointment appointment: appointmentService.getAll()) {
+                appointmentsWithLinks.add(mapWithLinks(appointment));
+            }
+            JsonUtil.writeJsonResponse(resp, appointmentsWithLinks);
         }
     }
 
@@ -108,4 +114,10 @@ public class AppointmentServlet extends HttpServlet {
         }
     }
 
+    private Map<String, Object> mapWithLinks(Appointment appointment) {
+        Map<String, Object> links =
+                Map.of("patient_endpoint", "/clinic/patients/" + appointment.getPatientId(),
+                        "doctor_endpoint", "/clinic/doctors/" + appointment.getDoctorId());
+        return Map.of("appointment", appointment, "links", links);
+    }
 }
