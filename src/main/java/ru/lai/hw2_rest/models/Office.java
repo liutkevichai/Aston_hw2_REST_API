@@ -23,8 +23,20 @@ public class Office {
     }
 
     public void setUpWithMap(Map<String, String> map) throws IllegalArgumentException {
-        this.setId(Integer.parseInt(map.get("id")));
-        this.setAddress(map.get("address").replace("%20", ","));
+
+        String idStr = map.get("id");
+        if (idStr == null || idStr.isEmpty()) {
+            this.setId(0);
+        } else {
+            this.setId(Integer.parseInt(idStr));
+        }
+
+        String addressStr = map.get("address");
+        if (addressStr == null || addressStr.isEmpty()) {
+            this.setAddress(null);
+        } else {
+            this.setAddress(addressStr.replace("%2C", ","));
+        }
     }
 
     @Override

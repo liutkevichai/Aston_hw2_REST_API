@@ -58,13 +58,16 @@ public class OfficeRepository extends Repository<Office> {
 
     @Override
     public int update(Office entity) throws SQLException {
+        int id = entity.getId();
+        if (id == 0) {return 0;}
+
         String query = "UPDATE Offices SET address = ? WHERE id = ?;";
 
         try (Connection conn = super.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setString(1, entity.getAddress());
-            statement.setInt(2, entity.getId());
+            statement.setInt(2, id);
             return statement.executeUpdate();
         }
     }

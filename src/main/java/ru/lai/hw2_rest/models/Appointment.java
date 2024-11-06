@@ -55,11 +55,41 @@ public class Appointment {
     }
 
     public void setUpWithMap(Map<String, String> map) throws NumberFormatException, DateTimeParseException {
-        this.setId(Integer.parseInt(map.get("id")));
-        this.setAppointmentDatetime(LocalDateTime.parse(map.get("appointmentDatetime").replace("%3A", ":")));
-        this.setPatientId(Integer.parseInt(map.get("patientId")));
-        this.setDoctorId(Integer.parseInt(map.get("doctorId")));
-        this.setOfficeId(Integer.parseInt(map.get("officeId")));
+
+        String idStr = map.get("id");
+        if (idStr == null || idStr.isEmpty()) {
+            this.setId(0);
+        } else {
+            this.setId(Integer.parseInt(idStr));
+        }
+
+        String dateTimeStr = map.get("appointmentDatetime");
+        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
+            this.setAppointmentDatetime(null);
+        } else {
+            this.setAppointmentDatetime(LocalDateTime.parse(dateTimeStr.replace("%3A", ":")));
+        }
+
+        String patientIdStr = map.get("patientId");
+        if (patientIdStr == null || patientIdStr.isEmpty()) {
+            this.setPatientId(0);
+        } else {
+            this.setPatientId(Integer.parseInt(patientIdStr));
+        }
+
+        String doctorIdStr = map.get("doctorId");
+        if (doctorIdStr == null || doctorIdStr.isEmpty()) {
+            this.setDoctorId(0);
+        } else {
+            this.setDoctorId(Integer.parseInt(doctorIdStr));
+        }
+
+        String officeIdStr = map.get("officeId");
+        if (officeIdStr == null || officeIdStr.isEmpty()) {
+            this.setOfficeId(0);
+        } else {
+            this.setOfficeId(Integer.parseInt(officeIdStr));
+        }
     }
 
     @Override

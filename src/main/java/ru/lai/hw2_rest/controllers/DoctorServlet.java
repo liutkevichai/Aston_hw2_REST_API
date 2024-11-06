@@ -28,7 +28,7 @@ public class DoctorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null) {
+        if (pathInfo != null && !pathInfo.equals("/")) {
             if (pathInfo.matches("/\\d+")) {
                 int doctorId = Integer.parseInt(pathInfo.substring(1));
                 Doctor doctor = doctorService.getById(doctorId);
@@ -37,11 +37,13 @@ public class DoctorServlet extends HttpServlet {
                     JsonUtil.writeJsonResponse(resp, doctor);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp, "error", "Doctor not found");
+                    JsonUtil.writeJsonResponse(resp,
+                            "error", "Doctor with ID " + doctorId + " not found");
                 }
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Invalid doctor ID");
+                JsonUtil.writeJsonResponse(resp,
+                        "error", "Invalid doctor ID: " + pathInfo.substring(1));
             }
         } else {
             List<Doctor> doctors = doctorService.getAll();
@@ -56,10 +58,10 @@ public class DoctorServlet extends HttpServlet {
             Doctor doctor = RequestMapper.mapToDoctor(req);
             if (doctorService.create(doctor) > 0) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
-                JsonUtil.writeJsonResponse(resp, "created", "Doctor was created");
+                JsonUtil.writeJsonResponse(resp, "created", "Doctor was created: " + doctor);
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Couldn't create a doctor");
+                JsonUtil.writeJsonResponse(resp, "error", "Couldn't create a doctor: " + doctor);
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -74,10 +76,12 @@ public class DoctorServlet extends HttpServlet {
             Doctor doctor = doctorService.parseEntity(req);
             if  (doctorService.update(doctor) > 0) {
                 resp.setStatus(HttpServletResponse.SC_OK);
-                JsonUtil.writeJsonResponse(resp, "updated", "Doctor was updated");
+                JsonUtil.writeJsonResponse(resp,
+                        "updated", "Doctor with ID " + doctor.getId() + " was updated");
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                JsonUtil.writeJsonResponse(resp, "error", "Doctor not found");
+                JsonUtil.writeJsonResponse(resp,
+                        "error", "Doctor with ID " + doctor.getId() + " not found");
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -92,14 +96,16 @@ public class DoctorServlet extends HttpServlet {
                 Doctor doctor = doctorService.parseEntity(req);
                 if (doctorService.delete(doctor.getId()) > 0) {
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    JsonUtil.writeJsonResponse(resp, "deleted", "Doctor was deleted");
+                    JsonUtil.writeJsonResponse(resp,
+                            "deleted", "Doctor with ID " + doctor.getId() + " was deleted");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp, "error", "Doctor not found");
+                    JsonUtil.writeJsonResponse(resp,
+                            "error", "Doctor with ID " + doctor.getId() + " not found");
                 }
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Doctor id should be a number");
+                JsonUtil.writeJsonResponse(resp, "error", "Doctor ID should be a number");
             }
 
         } else {

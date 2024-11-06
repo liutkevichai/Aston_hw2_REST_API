@@ -28,7 +28,7 @@ public class PatientServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null) {
+        if (pathInfo != null && !pathInfo.equals("/")) {
             if (pathInfo.matches("/\\d+")) {
                 int patientId = Integer.parseInt(pathInfo.substring(1));
                 Patient patient = patientService.getById(patientId);
@@ -37,11 +37,13 @@ public class PatientServlet extends HttpServlet {
                     JsonUtil.writeJsonResponse(resp, patient);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp, "error", "Patient not found");
+                    JsonUtil.writeJsonResponse(resp,
+                            "error", "Patient with ID " + patientId + " not found");
                 }
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Invalid patient ID");
+                JsonUtil.writeJsonResponse(resp,
+                        "error", "Invalid patient ID: " + pathInfo.substring(1));
             }
         } else {
             List<Patient> patients = patientService.getAll();
@@ -55,11 +57,11 @@ public class PatientServlet extends HttpServlet {
         if (AuthUtil.isAuthorized(req)) {
             Patient patient = RequestMapper.mapToPatient(req);
             if (patientService.create(patient) > 0) {
-                resp.setStatus(HttpServletResponse.SC_CREATED); // Изменено на SC_CREATED
-                JsonUtil.writeJsonResponse(resp, "created", "Patient was created");
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                JsonUtil.writeJsonResponse(resp, "created", "Patient was created:" + patient);
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Couldn't create a patient");
+                JsonUtil.writeJsonResponse(resp, "error", "Couldn't create a patient:" + patient);
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -74,10 +76,12 @@ public class PatientServlet extends HttpServlet {
             Patient patient = patientService.parseEntity(req);
             if  (patientService.update(patient) > 0) {
                 resp.setStatus(HttpServletResponse.SC_OK);
-                JsonUtil.writeJsonResponse(resp, "updated", "Patient was updated");
+                JsonUtil.writeJsonResponse(resp,
+                        "updated", "Patient with ID " + patient.getId() + " was updated");
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                JsonUtil.writeJsonResponse(resp, "error", "Patient not found");
+                JsonUtil.writeJsonResponse(resp,
+                        "error", "Patient with ID " + patient.getId() + " not found");
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -92,14 +96,16 @@ public class PatientServlet extends HttpServlet {
                 Patient patient = patientService.parseEntity(req);
                 if (patientService.delete(patient.getId()) > 0) {
                     resp.setStatus(HttpServletResponse.SC_OK);
-                    JsonUtil.writeJsonResponse(resp, "deleted", "Patient was deleted");
+                    JsonUtil.writeJsonResponse(resp,
+                            "deleted", "Patient with ID " + patient.getId() + " was deleted");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp, "error", "Patient not found");
+                    JsonUtil.writeJsonResponse(resp,
+                            "error", "Patient with ID " + patient.getId() + " not found");
                 }
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Patient id should be a number");
+                JsonUtil.writeJsonResponse(resp, "error", "Patient ID should be a number");
             }
 
         } else {

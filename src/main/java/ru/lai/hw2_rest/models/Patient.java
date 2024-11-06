@@ -3,6 +3,7 @@ package ru.lai.hw2_rest.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Patient {
@@ -54,11 +55,24 @@ public class Patient {
     }
 
     public void setUpWithMap(Map<String, String> map) throws IllegalArgumentException {
-        this.setId(Integer.parseInt(map.get("id")));
+
+        String idStr = map.get("id");
+        if (idStr == null || idStr.isEmpty()) {
+            this.setId(0);
+        } else {
+            this.setId(Integer.parseInt(idStr));
+        }
+
         this.setFirstName(map.get("firstName"));
         this.setLastName(map.get("lastName"));
-        this.setDateOfBirth(Date.valueOf(map.get("dateOfBirth")));
         this.setGender(map.get("gender"));
+
+        String dateOfBirthStr = map.get("dateOfBirth");
+        if (dateOfBirthStr == null || dateOfBirthStr.isEmpty()) {
+            this.setDateOfBirth(null);
+        } else {
+            this.setDateOfBirth(Date.valueOf(dateOfBirthStr));
+        }
     }
 
     @Override

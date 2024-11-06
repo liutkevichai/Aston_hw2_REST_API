@@ -1,5 +1,6 @@
 package ru.lai.hw2_rest.models;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Doctor {
@@ -50,11 +51,25 @@ public class Doctor {
     }
 
     public void setUpWithMap(Map<String, String> map) throws NumberFormatException {
-        this.setId(Integer.parseInt(map.get("id")));
+
+        String idStr = map.get("id");
+        if (idStr == null || idStr.isEmpty()) {
+            this.setId(0);
+        } else {
+            this.setId(Integer.parseInt(idStr));
+        }
+
         this.setFirstName(map.get("firstName"));
         this.setLastName(map.get("lastName"));
         this.setSpecialization(map.get("specialization"));
-        this.setYearsOfExperience(Integer.parseInt(map.get("yearsOfExperience")));
+
+        String yearsOfExperienceStr = map.get("yearsOfExperience");
+        if (yearsOfExperienceStr == null || yearsOfExperienceStr.isEmpty()) {
+            this.setYearsOfExperience(0);
+        } else {
+            this.setYearsOfExperience(Integer.parseInt(yearsOfExperienceStr));
+        }
+
     }
 
     @Override

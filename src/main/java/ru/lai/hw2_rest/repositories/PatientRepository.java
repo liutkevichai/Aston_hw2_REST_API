@@ -58,19 +58,60 @@ public class PatientRepository extends Repository<Patient> {
 
     @Override
     public int update(Patient entity) throws SQLException {
-        String query = "UPDATE Patients SET first_name = ?, last_name = ?, date_of_birth = ?, gender = ?::genders " +
-                "WHERE id = ?;";
+        int valuesUpdated = 0;
 
-        try (Connection conn = super.getConnection();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+        int id = entity.getId();
+        String firstName = entity.getFirstName();
+        String lastName = entity.getLastName();
+        Date dateOfBirth = entity.getDateOfBirth();
+        String gender = entity.getGender();
 
-            statement.setString(1, entity.getFirstName());
-            statement.setString(2, entity.getLastName());
-            statement.setDate(3, entity.getDateOfBirth());
-            statement.setString(4, entity.getGender());
-            statement.setInt(5, entity.getId());
-            return statement.executeUpdate();
+        if (id == 0) {return 0;}
+
+        if (firstName != null) {
+            String firstNameQuery = "UPDATE Patients SET first_name = ? WHERE id = ?";
+
+            try (Connection conn = super.getConnection();
+                 PreparedStatement statement = conn.prepareStatement(firstNameQuery)) {
+                statement.setString(1, firstName);
+                statement.setInt(2, id);
+                valuesUpdated += statement.executeUpdate();
+            }
         }
+
+        if (lastName != null) {
+            String lastNameQuery = "UPDATE Patients SET last_name = ? WHERE id = ?";
+
+            try (Connection conn = super.getConnection();
+                 PreparedStatement statement = conn.prepareStatement(lastNameQuery)) {
+                statement.setString(1, lastName);
+                statement.setInt(2, id);
+                valuesUpdated += statement.executeUpdate();
+            }
+        }
+
+        if (dateOfBirth != null) {
+            String dateOfBirthQuery = "UPDATE Patients SET date_of_birth = ? WHERE id = ?";
+
+            try (Connection conn = super.getConnection();
+                 PreparedStatement statement = conn.prepareStatement(dateOfBirthQuery)) {
+                statement.setDate(1, dateOfBirth);
+                statement.setInt(2, id);
+                valuesUpdated += statement.executeUpdate();
+            }
+        }
+
+        if (gender != null) {
+            String genderQuery = "UPDATE Patients SET gender = ?::genders WHERE id = ?";
+
+            try (Connection conn = super.getConnection();
+                 PreparedStatement statement = conn.prepareStatement(genderQuery)) {
+                statement.setString(1, gender);
+                statement.setInt(2, id);
+                valuesUpdated += statement.executeUpdate();
+            }
+        }
+        return valuesUpdated > 0 ? 1 : 0;
     }
 
     @Override

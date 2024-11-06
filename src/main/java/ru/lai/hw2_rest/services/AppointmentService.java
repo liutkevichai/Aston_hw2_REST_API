@@ -54,7 +54,9 @@ public class AppointmentService implements Service<Appointment> {
 
     @Override
     public int update(Appointment entity) {
-        validateAppointmentDateTime(entity.getAppointmentDatetime());
+        if (entity.getAppointmentDatetime() != null) {
+            validateAppointmentDateTime(entity.getAppointmentDatetime());
+        }
         try {
             return repository.update(entity);
         } catch (SQLException e) {
@@ -89,7 +91,8 @@ public class AppointmentService implements Service<Appointment> {
 
     private void validateAppointmentDateTime(LocalDateTime appointmentDatetime) {
         if (appointmentDatetime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("(Service) Date and time of the appointment must be later than the current moment");
+            throw new IllegalArgumentException(
+                    "(Service) Date and time of the appointment must be later than the current moment");
         }
     }
 
