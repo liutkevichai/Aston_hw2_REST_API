@@ -1,10 +1,7 @@
 package ru.lai.hw2_rest.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import ru.lai.hw2_rest.models.Appointment;
-import ru.lai.hw2_rest.models.Doctor;
-import ru.lai.hw2_rest.models.Office;
-import ru.lai.hw2_rest.models.Patient;
+import ru.lai.hw2_rest.models.*;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -25,7 +22,6 @@ public class RequestMapper {
         appointment.setPatientId(parseIntParameter(req, "patientId"));
         appointment.setDoctorId(parseIntParameter(req, "doctorId"));
         appointment.setOfficeId(parseIntParameter(req, "officeId"));
-
 
         return appointment;
     }
@@ -70,6 +66,19 @@ public class RequestMapper {
         office.setAddress(req.getParameter("address"));
 
         return office;
+    }
+
+    public static StaffAssignment mapToStaffAssignment(HttpServletRequest req) {
+        StaffAssignment assignment = new StaffAssignment();
+
+        if (req.getParameter("id") != null){
+            assignment.setId(parseIntParameter(req, "id"));
+        }
+
+        assignment.setDoctorId(parseIntParameter(req, "doctorId"));
+        assignment.setOfficeId(parseIntParameter(req, "officeId"));
+
+        return assignment;
     }
 
     private static Integer parseIntParameter(HttpServletRequest req, String paramName) {

@@ -19,7 +19,8 @@ public class ApiControllerServlet extends HttpServlet {
                 Map.of("name", "Doctors", "endpoint", "/clinic/doctors", "methods", List.of("GET", "POST", "PUT", "DELETE")),
                 Map.of("name", "Offices", "endpoint", "/clinic/offices", "methods", List.of("GET", "POST", "PUT", "DELETE")),
                 Map.of("name", "Patients", "endpoint", "/clinic/patients", "methods", List.of("GET", "POST", "PUT", "DELETE")),
-                Map.of("name", "Appointments", "endpoint", "/clinic/appointments", "methods", List.of("GET", "POST", "PUT", "DELETE"))
+                Map.of("name", "Appointments", "endpoint", "/clinic/appointments", "methods", List.of("GET", "POST", "PUT", "DELETE")),
+                Map.of("name", "Staff", "endpoint", "/clinic/staff", "methods", List.of("GET", "POST", "PUT", "DELETE"))
         ));
 
         JsonUtil.writeJsonResponse(resp, apiInfo);

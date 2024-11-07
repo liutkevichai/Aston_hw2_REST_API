@@ -3,8 +3,8 @@ package ru.lai.hw2_rest.models;
 import java.util.Map;
 
 public class Office {
-    int id;
-    String address;
+    private int id;
+    private String address;
 
     public int getId() {
         return id;
@@ -22,7 +22,7 @@ public class Office {
         this.address = address;
     }
 
-    public void setUpWithMap(Map<String, String> map) throws IllegalArgumentException {
+    public void setUpWithMap(Map<String, String> map) throws NumberFormatException {
 
         String idStr = map.get("id");
         if (idStr == null || idStr.isEmpty()) {

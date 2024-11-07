@@ -61,7 +61,7 @@ public class OfficeServlet extends HttpServlet {
                 JsonUtil.writeJsonResponse(resp, "created", "Office was created: " + office);
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                JsonUtil.writeJsonResponse(resp, "error", "Couldn't create a office: " + office);
+                JsonUtil.writeJsonResponse(resp, "error", "Couldn't create an office: " + office);
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

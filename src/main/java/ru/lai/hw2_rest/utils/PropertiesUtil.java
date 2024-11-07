@@ -1,6 +1,5 @@
 package ru.lai.hw2_rest.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -10,9 +9,9 @@ import java.util.logging.Logger;
 
 public class PropertiesUtil {
     private static final Logger logger = Logger.getLogger(PropertiesUtil.class.getName());
-    private Properties properties = new Properties();
+    private final Properties properties;
 
-    private PropertiesUtil(Properties properties) {
+    PropertiesUtil(Properties properties) {
         this.properties = properties;
     }
 

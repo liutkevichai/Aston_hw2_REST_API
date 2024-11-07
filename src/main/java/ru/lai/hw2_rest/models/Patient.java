@@ -3,7 +3,6 @@ package ru.lai.hw2_rest.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Patient {
