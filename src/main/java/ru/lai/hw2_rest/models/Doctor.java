@@ -1,6 +1,5 @@
 package ru.lai.hw2_rest.models;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Doctor {
