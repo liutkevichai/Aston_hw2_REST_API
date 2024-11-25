@@ -14,13 +14,12 @@ public class ApiControllerServlet extends HttpServlet {
 
         Map<String, Object> apiInfo = new LinkedHashMap<>();
         apiInfo.put("description", "Welcome to the Private Clinic REST API. This API provides endpoints to manage doctors, patients, offices, and appointments.");
-        apiInfo.put("version", "1.0");
+        apiInfo.put("version", "2.0");
         apiInfo.put("resources", List.of(
                 Map.of("name", "Doctors", "endpoint", "/clinic/doctors", "methods", List.of("GET", "POST", "PUT", "DELETE")),
                 Map.of("name", "Offices", "endpoint", "/clinic/offices", "methods", List.of("GET", "POST", "PUT", "DELETE")),
                 Map.of("name", "Patients", "endpoint", "/clinic/patients", "methods", List.of("GET", "POST", "PUT", "DELETE")),
-                Map.of("name", "Appointments", "endpoint", "/clinic/appointments", "methods", List.of("GET", "POST", "PUT", "DELETE")),
-                Map.of("name", "Staff", "endpoint", "/clinic/staff", "methods", List.of("GET", "POST", "PUT", "DELETE"))
+                Map.of("name", "Appointments", "endpoint", "/clinic/appointments", "methods", List.of("GET", "POST", "PUT", "DELETE"))
         ));
 
         JsonUtil.writeJsonResponse(resp, apiInfo);

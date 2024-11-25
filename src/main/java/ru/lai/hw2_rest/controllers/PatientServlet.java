@@ -56,7 +56,7 @@ public class PatientServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
             Patient patient = RequestMapper.mapToPatient(req);
-            if (patientService.create(patient) > 0) {
+            if (patientService.save(patient) != null) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 JsonUtil.writeJsonResponse(resp, "created", "Patient was created:" + patient);
             } else {
@@ -73,8 +73,8 @@ public class PatientServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
-            Patient patient = patientService.parseEntity(req);
-            if  (patientService.update(patient) > 0) {
+            Patient patient = RequestMapper.mapToPatient(req);
+            if  (patientService.save(patient) != null) {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 JsonUtil.writeJsonResponse(resp,
                         "updated", "Patient with ID " + patient.getId() + " was updated");
@@ -93,16 +93,18 @@ public class PatientServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (AuthUtil.isAuthorized(req)) {
             try {
-                Patient patient = patientService.parseEntity(req);
-                if (patientService.delete(patient.getId()) > 0) {
+                Patient patient = RequestMapper.mapToPatient(req);
+
+                if (patientService.getById(patient.getId()) != null) {
+                    patientService.delete(patient.getId());
                     resp.setStatus(HttpServletResponse.SC_OK);
                     JsonUtil.writeJsonResponse(resp,
                             "deleted", "Patient with ID " + patient.getId() + " was deleted");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp,
-                            "error", "Patient with ID " + patient.getId() + " not found");
+                    JsonUtil.writeJsonResponse(resp, "error", "Patient with ID " + patient.getId() + " not found");
                 }
+
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonUtil.writeJsonResponse(resp, "error", "Patient ID should be a number");
