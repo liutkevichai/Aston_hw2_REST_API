@@ -1,7 +1,5 @@
 package ru.lai.hw2_rest.services;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.List;
 
 public interface Service<T> {
@@ -9,11 +7,7 @@ public interface Service<T> {
 
     List<T> getAll();
 
-    int create(T entity);
+    T save(T entity);
 
-    int update(T entity);
-
-    int delete(int id);
-
-    T parseEntity(HttpServletRequest req);
+    void delete(int id);
 }

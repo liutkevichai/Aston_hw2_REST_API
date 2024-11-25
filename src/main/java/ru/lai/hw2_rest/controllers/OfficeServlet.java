@@ -5,8 +5,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import ru.lai.hw2_rest.models.Doctor;
 import ru.lai.hw2_rest.models.Office;
+import ru.lai.hw2_rest.repositories.DoctorRepository;
 import ru.lai.hw2_rest.repositories.OfficeRepository;
+import ru.lai.hw2_rest.services.DoctorService;
 import ru.lai.hw2_rest.services.OfficeService;
 import ru.lai.hw2_rest.services.Service;
 import ru.lai.hw2_rest.utils.AuthUtil;
@@ -19,10 +22,12 @@ import java.util.List;
 @WebServlet(name = "officeServlet", value = "/offices/*")
 public class OfficeServlet extends HttpServlet {
     private Service<Office> officeService;
+    private Service<Doctor> doctorService;
 
     @Override
     public void init() {
         this.officeService = new OfficeService(new OfficeRepository());
+        this.doctorService = new DoctorService(new DoctorRepository());
     }
 
     @Override
@@ -55,8 +60,8 @@ public class OfficeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
-            Office office = RequestMapper.mapToOffice(req);
-            if (officeService.create(office) > 0) {
+            Office office = RequestMapper.mapToOffice(req, doctorService);
+            if (officeService.save(office) != null) {
                 resp.setStatus(HttpServletResponse.SC_CREATED); // Изменено на SC_CREATED
                 JsonUtil.writeJsonResponse(resp, "created", "Office was created: " + office);
             } else {
@@ -73,8 +78,8 @@ public class OfficeServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
-            Office office = officeService.parseEntity(req);
-            if  (officeService.update(office) > 0) {
+            Office office = RequestMapper.mapToOffice(req, doctorService);
+            if  (officeService.save(office) != null) {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 JsonUtil.writeJsonResponse(resp,
                         "updated", "Office with ID " + office.getId() + " was updated");
@@ -93,16 +98,18 @@ public class OfficeServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (AuthUtil.isAuthorized(req)) {
             try {
-                Office office = officeService.parseEntity(req);
-                if (officeService.delete(office.getId()) > 0) {
+                Office office = RequestMapper.mapToOffice(req, doctorService);
+
+                if (officeService.getById(office.getId()) != null) {
+                    officeService.delete(office.getId());
                     resp.setStatus(HttpServletResponse.SC_OK);
                     JsonUtil.writeJsonResponse(resp,
                             "deleted", "Office with ID " + office.getId() + " was deleted");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp,
-                            "error", "Office with ID " + office.getId() + " not found");
+                    JsonUtil.writeJsonResponse(resp, "error", "Office with ID " + office.getId() + " not found");
                 }
+
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonUtil.writeJsonResponse(resp, "error", "Office ID should be a number");

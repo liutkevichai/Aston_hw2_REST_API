@@ -6,8 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import ru.lai.hw2_rest.models.Doctor;
+import ru.lai.hw2_rest.models.Office;
 import ru.lai.hw2_rest.repositories.DoctorRepository;
+import ru.lai.hw2_rest.repositories.OfficeRepository;
 import ru.lai.hw2_rest.services.DoctorService;
+import ru.lai.hw2_rest.services.OfficeService;
 import ru.lai.hw2_rest.services.Service;
 import ru.lai.hw2_rest.utils.AuthUtil;
 import ru.lai.hw2_rest.utils.JsonUtil;
@@ -19,10 +22,12 @@ import java.util.List;
 @WebServlet(name = "doctorServlet", value = "/doctors/*")
 public class DoctorServlet extends HttpServlet {
     private Service<Doctor> doctorService;
+    private Service<Office> officeService;
 
     @Override
     public void init() {
         this.doctorService = new DoctorService(new DoctorRepository());
+        this.officeService = new OfficeService(new OfficeRepository());
     }
 
     @Override
@@ -55,8 +60,8 @@ public class DoctorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
-            Doctor doctor = RequestMapper.mapToDoctor(req);
-            if (doctorService.create(doctor) > 0) {
+            Doctor doctor = RequestMapper.mapToDoctor(req, officeService);
+            if (doctorService.save(doctor) != null) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 JsonUtil.writeJsonResponse(resp, "created", "Doctor was created: " + doctor);
             } else {
@@ -73,8 +78,8 @@ public class DoctorServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
-            Doctor doctor = doctorService.parseEntity(req);
-            if  (doctorService.update(doctor) > 0) {
+            Doctor doctor = RequestMapper.mapToDoctor(req, officeService);
+            if  (doctorService.save(doctor) != null) {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 JsonUtil.writeJsonResponse(resp,
                         "updated", "Doctor with ID " + doctor.getId() + " was updated");
@@ -93,16 +98,18 @@ public class DoctorServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (AuthUtil.isAuthorized(req)) {
             try {
-                Doctor doctor = doctorService.parseEntity(req);
-                if (doctorService.delete(doctor.getId()) > 0) {
+                Doctor doctor = RequestMapper.mapToDoctor(req, officeService);
+
+                if (doctorService.getById(doctor.getId()) != null) {
+                    doctorService.delete(doctor.getId());
                     resp.setStatus(HttpServletResponse.SC_OK);
                     JsonUtil.writeJsonResponse(resp,
                             "deleted", "Doctor with ID " + doctor.getId() + " was deleted");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp,
-                            "error", "Doctor with ID " + doctor.getId() + " not found");
+                    JsonUtil.writeJsonResponse(resp, "error", "Doctor with ID " + doctor.getId() + " not found");
                 }
+
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonUtil.writeJsonResponse(resp, "error", "Doctor ID should be a number");

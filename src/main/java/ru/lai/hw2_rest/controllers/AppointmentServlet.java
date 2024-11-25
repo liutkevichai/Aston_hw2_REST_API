@@ -63,7 +63,7 @@ public class AppointmentServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
             Appointment appointment = RequestMapper.mapToAppointment(req);
-            if (appointmentService.create(appointment) > 0) {
+            if (appointmentService.save(appointment) != null) {
                 resp.setStatus(HttpServletResponse.SC_CREATED); // Изменено на SC_CREATED
                 JsonUtil.writeJsonResponse(resp, "created", "Appointment was created: " + appointment);
             } else {
@@ -80,8 +80,8 @@ public class AppointmentServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         if (AuthUtil.isAuthorized(req)) {
-            Appointment appointment = appointmentService.parseEntity(req);
-            if  (appointmentService.update(appointment) > 0) {
+            Appointment appointment = RequestMapper.mapToAppointment(req);
+            if  (appointmentService.save(appointment) != null) {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 JsonUtil.writeJsonResponse(resp,
                         "updated", "Appointment with ID " + appointment.getId() + " was updated");
@@ -100,16 +100,18 @@ public class AppointmentServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (AuthUtil.isAuthorized(req)) {
             try {
-                Appointment appointment = appointmentService.parseEntity(req);
-                if (appointmentService.delete(appointment.getId()) > 0) {
+                Appointment appointment = RequestMapper.mapToAppointment(req);
+
+                if (appointmentService.getById(appointment.getId()) != null) {
+                    appointmentService.delete(appointment.getId());
                     resp.setStatus(HttpServletResponse.SC_OK);
                     JsonUtil.writeJsonResponse(resp,
                             "deleted", "Appointment with ID " + appointment.getId() + " was deleted");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    JsonUtil.writeJsonResponse(resp,
-                            "error", "Appointment with ID " + appointment.getId() + " not found");
+                    JsonUtil.writeJsonResponse(resp, "error", "Appointment with ID " + appointment.getId() + " not found");
                 }
+
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonUtil.writeJsonResponse(resp, "error", "Appointment ID should be a number");
@@ -123,8 +125,8 @@ public class AppointmentServlet extends HttpServlet {
 
     private Map<String, Object> getMapWithLinks(Appointment appointment) {
         Map<String, Object> links =
-                Map.of("patient_endpoint", "/clinic/patients/" + appointment.getPatientId(),
-                        "doctor_endpoint", "/clinic/doctors/" + appointment.getDoctorId());
+                Map.of("patient_endpoint", "/clinic/patients/" + appointment.getPatient().getId(),
+                        "doctor_endpoint", "/clinic/doctors/" + appointment.getDoctor().getId());
         Map<String, Object> mapWithLinks = new LinkedHashMap<>();
         mapWithLinks.put("appointment", appointment);
         mapWithLinks.put("links", links);

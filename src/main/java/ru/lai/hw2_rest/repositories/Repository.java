@@ -1,33 +1,31 @@
 package ru.lai.hw2_rest.repositories;
 
-import ru.lai.hw2_rest.utils.DataSourceConfig;
-
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.hibernate.Session;
 
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.logging.Level;;
 
 public abstract class Repository<T> {
-    private static final Logger logger = Logger.getLogger(Repository.class.getName());
 
-    public Connection getConnection() {
-        try {
-            return DataSourceConfig.getConnection();
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Could not connect to database", e);
-            throw new RuntimeException("Failed to connect to database", e);
-        }
+    private final Class<T> entityClass;
+
+    protected Repository(Class<T> entityClass) {
+        this.entityClass = entityClass;
     }
 
-    public abstract T findById(int id) throws SQLException;
+    public T findById(int id, Session session) {
+        return session.get(entityClass, id);
+    }
 
-    public abstract List<T> findAll() throws SQLException;
+    public List<T> findAll(Session session) {
+        return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).getResultList();
+    }
 
-    public abstract int save(T entity) throws SQLException;
+    public T save(T entity, Session session) {
+        session.saveOrUpdate(entity);
+        return entity;
+    }
 
-    public abstract int update(T entity) throws SQLException;
-
-    public abstract int delete(int id) throws SQLException;
+    public void delete(T entity, Session session) {
+        session.delete(entity);
+    }
 }

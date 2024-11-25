@@ -2,10 +2,15 @@ package ru.lai.hw2_rest.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import ru.lai.hw2_rest.models.*;
+import ru.lai.hw2_rest.services.*;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class RequestMapper {
@@ -14,29 +19,77 @@ public class RequestMapper {
     public static Appointment mapToAppointment(HttpServletRequest req) {
         Appointment appointment = new Appointment();
 
-        if (req.getParameter("id") != null ){
+        String idParam = req.getParameter("id");
+        if (idParam != null) {
             appointment.setId(parseIntParameter(req, "id"));
         }
 
-        appointment.setAppointmentDatetime(parseLocalDateTimeParameter(req, "appointmentDatetime"));
-        appointment.setPatientId(parseIntParameter(req, "patientId"));
-        appointment.setDoctorId(parseIntParameter(req, "doctorId"));
-        appointment.setOfficeId(parseIntParameter(req, "officeId"));
+        String datetimeParam = req.getParameter("appointmentDatetime");
+        if (datetimeParam != null) {
+            appointment.setAppointmentDatetime(parseLocalDateTimeParameter(req, "appointmentDatetime"));
+        }
+
+        String patientIdParam = req.getParameter("patientId");
+        if (patientIdParam != null) {
+            Patient patient = new Patient();
+            patient.setId(parseIntParameter(req, "patientId"));
+            appointment.setPatient(patient);
+        }
+
+        String doctorIdParam = req.getParameter("doctorId");
+        if (doctorIdParam != null) {
+            Doctor doctor = new Doctor();
+            doctor.setId(parseIntParameter(req, "doctorId"));
+            appointment.setDoctor(doctor);
+        }
+
+        String officeIdParam = req.getParameter("officeId");
+        if (officeIdParam != null) {
+            Office office = new Office();
+            office.setId(parseIntParameter(req, "officeId"));
+            appointment.setOffice(office);
+        }
 
         return appointment;
     }
 
-    public static Doctor mapToDoctor(HttpServletRequest req) {
+    public static Doctor mapToDoctor(HttpServletRequest req, Service<Office> officeService) {
         Doctor doctor = new Doctor();
 
-        if (req.getParameter("id") != null ){
+        String idParam = req.getParameter("id");
+        if (idParam != null) {
             doctor.setId(parseIntParameter(req, "id"));
         }
 
-        doctor.setFirstName(req.getParameter("firstName"));
-        doctor.setLastName(req.getParameter("lastName"));
-        doctor.setSpecialization(req.getParameter("specialization"));
-        doctor.setYearsOfExperience(parseIntParameter(req, "yearsOfExperience"));
+        String firstName = req.getParameter("firstName");
+        if (firstName != null) {
+            doctor.setFirstName(firstName);
+        }
+
+        String lastName = req.getParameter("lastName");
+        if (lastName != null) {
+            doctor.setLastName(lastName);
+        }
+
+        String specialization = req.getParameter("specialization");
+        if (specialization != null) {
+            doctor.setSpecialization(specialization);
+        }
+
+        String experienceParam = req.getParameter("yearsOfExperience");
+        if (experienceParam != null) {
+            doctor.setYearsOfExperience(parseIntParameter(req, "yearsOfExperience"));
+        }
+
+        String[] officeIds = req.getParameterValues("officeIds");
+        if (officeIds != null) {
+            List<Office> offices = Arrays.stream(officeIds)
+                    .map(Integer::parseInt)
+                    .map(officeService::getById)
+                    .filter(Objects::nonNull)
+                    .toList();
+            doctor.setOffices(offices);
+        }
 
         return doctor;
     }
@@ -44,41 +97,58 @@ public class RequestMapper {
     public static Patient mapToPatient(HttpServletRequest req) {
         Patient patient = new Patient();
 
-        if (req.getParameter("id") != null ){
+        String idParam = req.getParameter("id");
+        if (idParam != null) {
             patient.setId(parseIntParameter(req, "id"));
         }
 
-        patient.setFirstName(req.getParameter("firstName"));
-        patient.setLastName(req.getParameter("lastName"));
-        patient.setDateOfBirth(parseDateParameter(req, "dateOfBirth"));
-        patient.setGender(req.getParameter("gender"));
+        String firstName = req.getParameter("firstName");
+        if (firstName != null) {
+            patient.setFirstName(firstName);
+        }
+
+        String lastName = req.getParameter("lastName");
+        if (lastName != null) {
+            patient.setLastName(lastName);
+        }
+
+        String dateOfBirthParam = req.getParameter("dateOfBirth");
+        if (dateOfBirthParam != null) {
+            patient.setDateOfBirth(parseDateParameter(req, "dateOfBirth"));
+        }
+
+        String gender = req.getParameter("gender");
+        if (gender != null) {
+            patient.setGender(gender);
+        }
 
         return patient;
     }
 
-    public static Office mapToOffice(HttpServletRequest req) {
+    public static Office mapToOffice(HttpServletRequest req, Service<Doctor> doctorService) {
         Office office = new Office();
 
-        if (req.getParameter("id") != null ){
+        String idParam = req.getParameter("id");
+        if (idParam != null) {
             office.setId(parseIntParameter(req, "id"));
         }
 
-        office.setAddress(req.getParameter("address"));
-
-        return office;
-    }
-
-    public static StaffAssignment mapToStaffAssignment(HttpServletRequest req) {
-        StaffAssignment assignment = new StaffAssignment();
-
-        if (req.getParameter("id") != null){
-            assignment.setId(parseIntParameter(req, "id"));
+        String address = req.getParameter("address");
+        if (address != null) {
+            office.setAddress(address);
         }
 
-        assignment.setDoctorId(parseIntParameter(req, "doctorId"));
-        assignment.setOfficeId(parseIntParameter(req, "officeId"));
+        String[] doctorIds = req.getParameterValues("doctorIds");
+        if (doctorIds != null) {
+            List<Doctor> doctors = Arrays.stream(doctorIds)
+                    .map(Integer::parseInt)
+                    .map(doctorService::getById)
+                    .filter(Objects::nonNull)
+                    .toList();
+            office.setDoctors(doctors);
+        }
 
-        return assignment;
+        return office;
     }
 
     private static Integer parseIntParameter(HttpServletRequest req, String paramName) {
