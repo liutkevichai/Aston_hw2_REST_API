@@ -18,12 +18,12 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public List<Doctor> getAllDoctors() {
         return doctorService.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path ="/{id}", produces = "application/json")
     public Doctor getDoctorById(@PathVariable int id) {
         return doctorService.getById(id);
     }
