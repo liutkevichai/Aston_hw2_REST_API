@@ -1,10 +1,11 @@
 package ru.lai.hw2_rest.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.lai.hw2_rest.models.Appointment;
 
-public class AppointmentRepository extends Repository<Appointment> {
 
-    public AppointmentRepository() {
-        super(Appointment.class);
-    }
+@Repository
+public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
+
 }

@@ -1,11 +1,11 @@
 package ru.lai.hw2_rest.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.lai.hw2_rest.models.Office;
 
-public class OfficeRepository extends Repository<Office> {
 
-    public OfficeRepository() {
-        super(Office.class);
-    }
+@Repository
+public interface OfficeRepository extends JpaRepository<Office, Integer> {
 
 }

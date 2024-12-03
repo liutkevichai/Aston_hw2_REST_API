@@ -2,15 +2,17 @@ package ru.lai.hw2_rest.controllers;
 
 import java.io.*;
 import java.util.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-import ru.lai.hw2_rest.utils.JsonUtil;
 
-@WebServlet(name = "apiControllerServlet", value = "/")
-public class ApiControllerServlet extends HttpServlet {
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
+@RestController
+@RequestMapping("/")
+public class ApiController {
+
+    @GetMapping(produces = "application/json")
+    public Map<String, Object> doGet() throws IOException {
 
         Map<String, Object> apiInfo = new LinkedHashMap<>();
         apiInfo.put("description", "Welcome to the Private Clinic REST API. This API provides endpoints to manage doctors, patients, offices, and appointments.");
@@ -22,6 +24,6 @@ public class ApiControllerServlet extends HttpServlet {
                 Map.of("name", "Appointments", "endpoint", "/clinic/appointments", "methods", List.of("GET", "POST", "PUT", "DELETE"))
         ));
 
-        JsonUtil.writeJsonResponse(resp, apiInfo);
+        return apiInfo;
     }
 }
