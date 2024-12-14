@@ -33,7 +33,7 @@ CREATE TABLE Appointments
     office_id            INTEGER NOT NULL REFERENCES Offices (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE StaffAssignments
+CREATE TABLE Doctor_Office
 (
     id        SERIAL PRIMARY KEY,
     doctor_id INTEGER NOT NULL REFERENCES Doctors (id) ON DELETE CASCADE ON UPDATE CASCADE,

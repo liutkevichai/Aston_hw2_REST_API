@@ -1,16 +1,29 @@
 package ru.lai.hw2_rest.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 
 import java.sql.Date;
-import java.util.Map;
 
+@Entity
+@Table(name = "Patients")
 public class Patient {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "date_of_birth")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
+
+    @Column(name = "gender")
     private String gender;
 
     public int getId() {
@@ -51,27 +64,6 @@ public class Patient {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public void setUpWithMap(Map<String, String> map) throws IllegalArgumentException {
-
-        String idStr = map.get("id");
-        if (idStr == null || idStr.isEmpty()) {
-            this.setId(0);
-        } else {
-            this.setId(Integer.parseInt(idStr));
-        }
-
-        this.setFirstName(map.get("firstName"));
-        this.setLastName(map.get("lastName"));
-        this.setGender(map.get("gender"));
-
-        String dateOfBirthStr = map.get("dateOfBirth");
-        if (dateOfBirthStr == null || dateOfBirthStr.isEmpty()) {
-            this.setDateOfBirth(null);
-        } else {
-            this.setDateOfBirth(Date.valueOf(dateOfBirthStr));
-        }
     }
 
     @Override
