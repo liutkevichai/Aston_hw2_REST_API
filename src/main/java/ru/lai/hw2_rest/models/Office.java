@@ -1,10 +1,24 @@
 package ru.lai.hw2_rest.models;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
+@Table(name = "Offices")
 public class Office {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "address")
     private String address;
+
+    @ManyToMany(mappedBy = "offices")
+    @JsonBackReference
+    private List<Doctor> doctors;
 
     public int getId() {
         return id;
@@ -22,21 +36,12 @@ public class Office {
         this.address = address;
     }
 
-    public void setUpWithMap(Map<String, String> map) throws NumberFormatException {
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
 
-        String idStr = map.get("id");
-        if (idStr == null || idStr.isEmpty()) {
-            this.setId(0);
-        } else {
-            this.setId(Integer.parseInt(idStr));
-        }
-
-        String addressStr = map.get("address");
-        if (addressStr == null || addressStr.isEmpty()) {
-            this.setAddress(null);
-        } else {
-            this.setAddress(addressStr.replace("%2C", ","));
-        }
+    public void setDoctors(List<Doctor> doctors) {
+        this.doctors = doctors;
     }
 
     @Override
@@ -46,4 +51,5 @@ public class Office {
                 ", address='" + address + '\'' +
                 '}';
     }
+
 }

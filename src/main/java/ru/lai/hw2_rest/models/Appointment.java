@@ -1,18 +1,33 @@
 package ru.lai.hw2_rest.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.util.Map;
 
+@Entity
+@Table(name = "Appointments")
 public class Appointment {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "appointment_datetime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime appointmentDatetime;
-    private int patientId;
-    private int doctorId;
-    private int officeId;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "office_id", nullable = false)
+    private Office office;
 
     public int getId() {
         return id;
@@ -30,66 +45,28 @@ public class Appointment {
         this.appointmentDatetime = appointmentDatetime;
     }
 
-    public int getPatientId() {
-        return patientId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public int getDoctorId() {
-        return doctorId;
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    public void setDoctorId(int doctorId) {
-        this.doctorId = doctorId;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
-    public int getOfficeId() {
-        return officeId;
+    public Office getOffice() {
+        return office;
     }
 
-    public void setOfficeId(int officeId) {
-        this.officeId = officeId;
-    }
-
-    public void setUpWithMap(Map<String, String> map) throws NumberFormatException, DateTimeParseException {
-
-        String idStr = map.get("id");
-        if (idStr == null || idStr.isEmpty()) {
-            this.setId(0);
-        } else {
-            this.setId(Integer.parseInt(idStr));
-        }
-
-        String dateTimeStr = map.get("appointmentDatetime");
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            this.setAppointmentDatetime(null);
-        } else {
-            this.setAppointmentDatetime(LocalDateTime.parse(dateTimeStr.replace("%3A", ":")));
-        }
-
-        String patientIdStr = map.get("patientId");
-        if (patientIdStr == null || patientIdStr.isEmpty()) {
-            this.setPatientId(0);
-        } else {
-            this.setPatientId(Integer.parseInt(patientIdStr));
-        }
-
-        String doctorIdStr = map.get("doctorId");
-        if (doctorIdStr == null || doctorIdStr.isEmpty()) {
-            this.setDoctorId(0);
-        } else {
-            this.setDoctorId(Integer.parseInt(doctorIdStr));
-        }
-
-        String officeIdStr = map.get("officeId");
-        if (officeIdStr == null || officeIdStr.isEmpty()) {
-            this.setOfficeId(0);
-        } else {
-            this.setOfficeId(Integer.parseInt(officeIdStr));
-        }
+    public void setOffice(Office office) {
+        this.office = office;
     }
 
     @Override
@@ -97,9 +74,9 @@ public class Appointment {
         return "Appointment{" +
                 "id=" + id +
                 ", appointmentDatetime=" + appointmentDatetime +
-                ", patientId=" + patientId +
-                ", doctorId=" + doctorId +
-                ", officeId=" + officeId +
+                ", patient=" + patient +
+                ", doctor=" + doctor +
+                ", office=" + office +
                 '}';
     }
 

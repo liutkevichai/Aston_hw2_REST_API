@@ -1,13 +1,37 @@
 package ru.lai.hw2_rest.models;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
+@Table(name = "Doctors")
 public class Doctor {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "specialization")
     private String specialization;
+
+    @Column(name = "years_of_experience")
     private int yearsOfExperience;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @JoinTable(name = "Doctor_Office",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "office_id")
+    )
+    private List<Office> offices;
 
     public int getId() {
         return id;
@@ -21,16 +45,16 @@ public class Doctor {
         return firstName;
     }
 
-    public void setFirstName(String first_name) {
-        this.firstName = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String last_name) {
-        this.lastName = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getSpecialization() {
@@ -45,30 +69,16 @@ public class Doctor {
         return yearsOfExperience;
     }
 
-    public void setYearsOfExperience(int years_of_experience) {
-        this.yearsOfExperience = years_of_experience;
+    public void setYearsOfExperience(int yearsOfExperience) {
+        this.yearsOfExperience = yearsOfExperience;
     }
 
-    public void setUpWithMap(Map<String, String> map) throws NumberFormatException {
+    public List<Office> getOffices() {
+        return offices;
+    }
 
-        String idStr = map.get("id");
-        if (idStr == null || idStr.isEmpty()) {
-            this.setId(0);
-        } else {
-            this.setId(Integer.parseInt(idStr));
-        }
-
-        this.setFirstName(map.get("firstName"));
-        this.setLastName(map.get("lastName"));
-        this.setSpecialization(map.get("specialization"));
-
-        String yearsOfExperienceStr = map.get("yearsOfExperience");
-        if (yearsOfExperienceStr == null || yearsOfExperienceStr.isEmpty()) {
-            this.setYearsOfExperience(0);
-        } else {
-            this.setYearsOfExperience(Integer.parseInt(yearsOfExperienceStr));
-        }
-
+    public void setOffices(List<Office> offices) {
+        this.offices = offices;
     }
 
     @Override
@@ -81,4 +91,5 @@ public class Doctor {
                 ", yearsOfExperience=" + yearsOfExperience +
                 '}';
     }
+
 }
